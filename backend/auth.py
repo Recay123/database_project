@@ -2,8 +2,12 @@
 import hmac
 import secrets
 
-from fastapi import HTTPException, Request
+from fastapi import Depends, HTTPException, Request
 from pwdlib import PasswordHash
+from pwdlib.exceptions import HashVerificationError, UnknownHashError
+
+from backend.db import get_db
+from backend.read_service import get_current_user
 
 _ph = PasswordHash.recommended()
 _DUMMY_HASH = _ph.hash("dummy-password-for-timing")
@@ -16,7 +20,7 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, password_hash: str) -> bool:
     try:
         return bool(_ph.verify(password, password_hash))
-    except Exception:
+    except (HashVerificationError, UnknownHashError, ValueError):
         return False
 
 
@@ -25,11 +29,11 @@ def verify_dummy(password: str) -> None:
     verify_password(password, _DUMMY_HASH)
 
 
-def require_user_id(request: Request) -> str:
-    uid = request.session.get("user_id")
-    if not uid:
+def require_user_id(request: Request, db=Depends(get_db)) -> str:
+    user = get_current_user(db, request)
+    if not user:
         raise HTTPException(status_code=401, detail="로그인이 필요합니다.")
-    return uid
+    return user["user_id"]
 
 
 def csrf_token(request: Request) -> str:
@@ -42,7 +46,9 @@ def csrf_token(request: Request) -> str:
 
 def check_csrf(request: Request, submitted) -> None:
     expected = request.session.get("csrf")
-    if not expected or not submitted or not hmac.compare_digest(expected, submitted):
+    if not expected or not submitted or not hmac.compare_digest(
+        expected.encode("utf-8"), submitted.encode("utf-8")
+    ):
         raise HTTPException(
             status_code=403,
             detail="잘못된 요청입니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.",

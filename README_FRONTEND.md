@@ -1,30 +1,27 @@
 # FRAME v3 — 프론트엔드 / 백엔드 연동 핸드오프
 
-**바로 전달:** `docs/FRONTEND_BACKEND_HANDOFF.md` → `docs/API_CONTRACT.md` → `docs/DB_TEAM_HANDOFF.md`를 확인해주세요.
+MySQL 백엔드의 환경설정, PowerShell 실행 명령, 데모 계정 및 테스트는 [백엔드 실행 안내](docs/BACKEND_RUN.md)에 있습니다. HTTP와 Jinja2 필드는 [API 계약](docs/API_CONTRACT.md)을 참고하세요.
 
 - 프론트엔드 UI와 v2 미리보기 기능은 유지됩니다. `app/preview_main.py` 사용.
-- **새로 추가**된 `backend/` 폴더가 백엔드 팀원 작업 공간이며, `backend/main.py`를 별도로 실행합니다.
-- `backend/read_service.py`의 샘플 조회를 SQL로 변경하고, `backend/routers/actions.py`의 501 스텁을 실제 API로 구현하면 됩니다.
+- 실제 로그인과 MySQL 저장은 `backend/main.py`에서 실행합니다.
 - 클라이언트는 `backend` 모드에서만 실제 서버 POST/DELETE 요청을 보내고, `preview` 모드는 기존 데모로 남습니다.
-- **현재 실DB 기능은 완성되지 않았습니다.** 인증/세션/CSRF/DB 트랜잭션은 백엔드 팀원이 구현해야 합니다.
 
 ## 실행 명령
 
 ```powershell
-cd "C:\Users\com\Desktop\jineon\dev_ws\database\group_proj"
-& "C:\Users\com\Desktop\jineon\venv\Scripts\python.exe" -m pip install -r requirements-backend.txt
+python -m pip install -r requirements-backend.txt
 
 # UI 데모 (포트 8000)
-& "C:\Users\com\Desktop\jineon\venv\Scripts\python.exe" -m uvicorn app.preview_main:app --reload
+python -m uvicorn app.preview_main:app --reload
 
 # 백엔드 개발 서버 (별도 터미널 / 8001)
-& "C:\Users\com\Desktop\jineon\venv\Scripts\python.exe" -m uvicorn backend.main:app --reload --port 8001
+python -m uvicorn backend.main:app --reload --port 8001
 ```
 
 - 미리보기: http://127.0.0.1:8000/feed
-- 백엔드 스캐폴드: http://127.0.0.1:8001/feed (GET은 샘플 데이터, POST는 501)
+- MySQL 백엔드: http://127.0.0.1:8001/login
 - API 문서: http://127.0.0.1:8001/docs
-- 자동 테스트: `python -m pytest -q tests/test_handoff.py` (`pytest`, `httpx` 설치 필요)
+- 자동 테스트: `python -m unittest discover -s tests -v`
 
 ---
 

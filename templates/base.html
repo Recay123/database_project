@@ -50,7 +50,7 @@
           <a class="nav-item {{ 'active' if active_page == 'settings' else '' }}" href="/settings/password"><svg class="icon"><use href="#i-settings"/></svg><span>설정</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="preview-indicator"><span class="status-dot"></span> {{ '백엔드 연동 대기 · 샘플 조회' if integration_mode|default('preview') == 'backend' else '프론트엔드 미리보기' }}</div>
+          {% if integration_mode|default('preview') == 'preview' %}<div class="preview-indicator"><span class="status-dot"></span> 프론트엔드 미리보기</div>{% endif %}
           <div class="sidebar-account">
             <button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ current_user.avatar_url }}" data-avatar-name="{{ current_user.display_name }}" aria-label="내 프로필 사진 확대"><img src="{{ current_user.avatar_url }}" alt="" class="avatar avatar-md"></button>
             <a class="sidebar-account-info" href="/profile/{{ current_user.user_id }}"><span><strong>{{ current_user.display_name }}</strong><small>@{{ current_user.user_id }}</small></span></a>

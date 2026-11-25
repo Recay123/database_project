@@ -18,11 +18,12 @@
         <input class="text-input" id="username" name="username" required autocomplete="username" placeholder="아이디를 입력하세요">
         <label class="field-label" for="password">비밀번호</label>
         <input class="text-input" id="password" name="password" type="password" required autocomplete="current-password" placeholder="비밀번호를 입력하세요">
+        {% if error %}<p class="field-error" role="alert">{{ error }}</p>{% endif %}
         <button class="btn btn-primary btn-block auth-submit" type="submit">로그인 <span aria-hidden="true">→</span></button>
       </form>
       <div class="auth-divider"><span>FRAME이 처음이신가요?</span></div>
       <a class="btn btn-outline btn-block" href="/signup">새 계정 만들기</a>
-      <p class="auth-demo-note">{{ '백엔드 작업 모드: 로그인 API가 완성되기 전까지 실제 인증은 진행되지 않습니다.' if integration_mode|default('preview') == 'backend' else '현재는 UI 미리보기입니다. 입력한 비밀번호는 저장되지 않으며 실제 인증은 진행되지 않습니다.' }}</p>
+      {% if integration_mode|default('preview') == 'preview' %}<p class="auth-demo-note">현재는 UI 미리보기입니다. 입력한 비밀번호는 저장되지 않으며 실제 인증은 진행되지 않습니다.</p>{% endif %}
     </div>
     <div class="auth-footer">데이터베이스 텀프로젝트 · 프론트엔드 데모</div>
   </section>

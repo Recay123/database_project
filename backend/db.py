@@ -1,8 +1,4 @@
-"""MySQL connector configuration. This module is not used by sample GET routes yet.
-
-Backend teammate: import get_db and call SQL using %s parameters.
-DB teammate: supply schema.sql and an initialization / sample data script.
-"""
+"""Load project settings and provide one MySQL connection per request."""
 import os
 from pathlib import Path
 

@@ -1,6 +1,6 @@
 # FRAME v3 — 프론트엔드 → 백엔드 인수인계
 
-> 팀원 전달용. 현재 `app/preview_main.py`는 **미리보기**, `backend/main.py`는 **연동 개발용 골격**입니다. MySQL 연동/실제 로그인/댓글/팔로우/좋아요는 아직 구현되지 않았습니다. `/health`를 확인해 실행 모드를 구분하세요.
+> 이 문서는 프론트 전달 당시의 개발 계획입니다. 현재 PowerShell 명령과 MySQL 기반 사용법은 [백엔드 실행 안내](BACKEND_RUN.md)를 참고하세요.
 
 ## 시작 가이드 (Windows PowerShell)
 

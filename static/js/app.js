@@ -390,7 +390,9 @@
     }
     // When valid, let the browser POST multipart/form-data to /posts.
   });
-  if (new URLSearchParams(location.search).get('uploaded') === '1') toast('게시물이 로컬 미리보기에 저장됐어요!');
+  if (new URLSearchParams(location.search).get('uploaded') === '1') {
+    toast(backendMode ? '게시물을 공유했어요!' : '게시물이 로컬 미리보기에 저장됐어요!');
+  }
 
   if (backendMode && document.querySelector('[data-password-changed]')) {
     const url = new URL(window.location.href);
@@ -398,7 +400,7 @@
     history.replaceState(history.state, '', url.pathname + url.search + url.hash);
   }
 
-  // These other forms remain demo-only until backend implementation.
+  // Preview simulates auth forms. Backend uses native form submissions.
   document.querySelectorAll('[data-demo-form]:not([data-demo-form="upload"])').forEach(form => {
     form.addEventListener('submit', e => {
       const kind = form.dataset.demoForm;

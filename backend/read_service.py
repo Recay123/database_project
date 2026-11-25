@@ -59,7 +59,7 @@ def get_suggested_users(db, viewer_id):
         """SELECT user_id, display_name, avatar_url FROM users
            WHERE user_id <> %s
              AND user_id NOT IN (SELECT followee_id FROM follows WHERE follower_id = %s)
-           ORDER BY created_at DESC LIMIT 5""",
+           ORDER BY created_at DESC, user_id LIMIT 5""",
         (viewer_id, viewer_id),
     )
     rows = cur.fetchall()
@@ -148,9 +148,9 @@ FROM users u
 """
 
 
-def _query_users(db, where, params, viewer_id, tail=""):
+def _query_users(db, where, params, viewer_id, tail="", join=""):
     cur = cursor(db)
-    cur.execute(_USER_SELECT + f" WHERE {where} {tail}", (viewer_id, *params))
+    cur.execute(_USER_SELECT + f" {join} WHERE {where} {tail}", (viewer_id, *params))
     rows = cur.fetchall()
     cur.close()
     return [{
@@ -175,17 +175,19 @@ def search_users(db, q, viewer_id):
     q = q.strip()[:60]
     if not q:
         return []
-    escaped = q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
-    return _query_users(db, "u.user_id LIKE %s", (f"%{escaped}%",), viewer_id,
+    escaped = q.replace("!", "!!").replace("%", "!%").replace("_", "!_")
+    return _query_users(db, "u.user_id LIKE %s ESCAPE '!'", (f"%{escaped}%",), viewer_id,
                         tail="ORDER BY u.user_id LIMIT 30")
 
 
 def get_follow_users(db, user_id, mode, viewer_id):
     if mode == "followers":
-        where = "u.user_id IN (SELECT follower_id FROM follows WHERE followee_id = %s)"
+        join = "JOIN follows rel ON rel.follower_id = u.user_id"
+        where = "rel.followee_id = %s"
     else:
-        where = "u.user_id IN (SELECT followee_id FROM follows WHERE follower_id = %s)"
-    return _query_users(db, where, (user_id,), viewer_id, tail="ORDER BY u.user_id")
+        join = "JOIN follows rel ON rel.followee_id = u.user_id"
+        where = "rel.follower_id = %s"
+    return _query_users(db, where, (user_id,), viewer_id, tail="ORDER BY u.user_id", join=join)
 
 
 # ---------- 스토리 (DB 없이 게시물에서 파생) ----------

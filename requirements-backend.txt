@@ -4,3 +4,4 @@ mysql-connector-python>=9.0
 python-dotenv>=1.0
 pwdlib[argon2]>=0.2
 itsdangerous>=2.2
+Pillow>=12.0

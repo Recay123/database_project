@@ -1,5 +1,7 @@
 # DB 팀원에게 전달할 스키마/SQL 합의안
 
+> 최종 스키마와 데모 설치 절차는 [schema.sql](../sql/schema.sql)과 [백엔드 실행 안내](BACKEND_RUN.md)에 있습니다. 아래는 초기 설계 논의를 정리한 자료입니다.
+
 > 과제 원문 필수: `User`, `Follow`, `Post`, `Comment` 및 ERD → 관계 스키마 → 함수적 종속성 → 정규화 → MySQL DDL. 아래는 팀 협업을 위한 **제안**이며 과제 필수 구조 자체와 동일하다고 단정하지 않습니다.
 
 ## 최소 4테이블
@@ -7,7 +9,7 @@
 | 릴레이션 | 컬럼 제안 | 핵심 제약/근거 |
 |---|---|---|
 | users | `user_id VARCHAR(30) PK`, `password_hash`, `display_name`, `avatar_url`, `bio`, `created_at` | 원문 `password`는 실제 구현에서 해시로 저장, ID 유일 |
-| follows | `follower_id`, `followee_id`, `created_at` | `(follower_id, followee_id)` 복합 PK, 모두 users FK, 본인 팔로우 CHECK |
+| follows | `follower_id`, `followee_id`, `created_at` | `(follower_id, followee_id)` 복합 PK, 모두 users FK, 자기 팔로우는 트리거로 차단 |
 | posts | `post_id BIGINT AUTO_INCREMENT PK`, `author_id FK`, `image_path`, `caption`, `created_at` | 이미지 내용이 아닌 경로 저장 |
 | comments | `comment_id BIGINT AUTO_INCREMENT PK`, `post_id FK`, `author_id FK`, `text`, `created_at` | 멘션 `@ID`는 text 안에 포함 가능 |
 
