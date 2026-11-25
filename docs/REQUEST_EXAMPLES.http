@@ -1,0 +1,32 @@
+### VS Code REST Client / HTTP file sample. Scaffold mutating requests return 501 until implemented.
+@base = http://127.0.0.1:8000
+
+### health
+GET {{base}}/health
+
+### feed page
+GET {{base}}/feed
+
+### user search
+GET {{base}}/search?q=ali
+
+### posts upload - form client / multipart recommended (HTML upload form)
+### /upload page sends multipart names image, caption, csrf_token.
+
+### comment POST (authenticated session+CSRF required once implemented)
+POST {{base}}/posts/105/comments
+Content-Type: application/x-www-form-urlencoded
+
+text=hello
+
+### like
+POST {{base}}/posts/105/likes
+
+### unlike
+DELETE {{base}}/posts/105/likes
+
+### follow
+POST {{base}}/users/alice/follow
+
+### unfollow
+DELETE {{base}}/users/alice/follow

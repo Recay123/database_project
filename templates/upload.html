@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}새 게시물{% endblock %}
+{% block content %}
+<div class="page-narrow">
+  <header class="simple-page-header"><div class="eyebrow">A NEW FRAME</div><h1>새로운 순간 기록하기 <span class="heading-spark">✳</span></h1><p class="muted">사진과 함께 기억하고 싶은 이야기를 남겨보세요.</p></header>
+  {% if upload_error %}<p class="upload-error" role="alert">{{ "사진 형식을 확인하고 다시 업로드해주세요. (JPG·PNG·WEBP, 8MB 이하)" if upload_error == "image" else "캡션은 2200자 이하여야 합니다." }}</p>{% endif %}
+  <form class="create-form" data-demo-form="upload" action="/posts" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}">
+    <div class="upload-grid"><div class="upload-preview" id="upload-preview" tabindex="0" role="button" aria-label="사진 선택" data-click-upload><div id="upload-empty" class="upload-empty"><svg class="icon upload-camera"><use href="#i-camera"/></svg><strong>사진을 여기에 추가하세요</strong><p>클릭해서 이미지 파일을 선택할 수 있어요</p><span>JPG · PNG · WEBP</span></div><img id="upload-image" alt="선택한 사진 미리보기" hidden></div>
+    <div class="upload-details"><div class="form-section-heading"><span class="step-badge">01</span><div><h2>사진 선택</h2><p>업로드할 이미지를 선택하세요.</p></div></div><label class="file-pick" for="image-file"><svg class="icon icon-small"><use href="#i-image"/></svg> 이미지 파일 선택</label><input type="file" id="image-file" name="image" accept="image/jpeg,image/png,image/webp" required class="sr-only"><p class="selected-file" id="selected-file">아직 선택한 파일이 없습니다.</p>
+    <div class="section-divider"></div><div class="form-section-heading"><span class="step-badge">02</span><div><h2>이야기 작성</h2><p>사진을 설명하는 글을 남겨보세요.</p></div></div><label class="field-label" for="caption">캡션</label><textarea class="text-input textarea" id="caption" name="caption" maxlength="2200" rows="6" placeholder="오늘은 어떤 순간을 기록하셨나요? #일상 #사진"></textarea><div class="character-count"><span id="caption-count">0</span> / 2200</div><button class="btn btn-primary btn-block create-button" type="submit">게시물 공유하기 <span>↗</span></button><p class="muted micro-copy">{{ '백엔드 작업 모드: /posts API가 구현되면 MySQL에 기록됩니다. 현재는 저장되지 않습니다.' if integration_mode|default('preview') == 'backend' else '미리보기 모드: 이미지가 이 컴퓨터의 static/uploads/에 저장됩니다. MySQL 저장은 아직 연결되지 않았습니다.' }}</p></div></div>
+  </form>
+</div>
+{% endblock %}

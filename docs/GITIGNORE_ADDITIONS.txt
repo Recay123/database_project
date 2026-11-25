@@ -1,0 +1,14 @@
+# Add these lines to your existing .gitignore. Do not overwrite an existing file.
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+!backend/.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+/static/uploads/*
+!/static/uploads/.gitkeep
+/preview_data/*
+!/preview_data/.gitkeep

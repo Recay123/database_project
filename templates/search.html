@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}사용자 검색{% endblock %}
+{% block content %}
+<div class="page-narrow follows-page search-page">
+  <header class="simple-page-header"><div class="eyebrow">FIND PEOPLE</div><h1>사용자 찾기 <span class="heading-spark">✳</span></h1><p class="muted">사용자 ID로 검색하고 프로필을 방문해보세요.</p></header>
+  <form method="get" action="/search" class="search-form" role="search"><svg class="icon"><use href="#i-search"/></svg><input type="search" name="q" value="{{ q }}" placeholder="예: alice, jineon" aria-label="사용자 ID 검색" maxlength="60" autofocus required><button class="btn btn-primary btn-small" type="submit">검색</button></form>
+  {% if q %}
+  <h2 class="search-heading">검색 결과 <span>{{ users|length }}명</span></h2>
+  <div class="follows-list">
+    {% for user in users %}
+    <div class="follow-item">
+      <button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ user.avatar_url }}" data-avatar-name="{{ user.display_name }}" aria-label="{{ user.display_name }} 프로필 사진 확대"><img class="avatar avatar-lg" src="{{ user.avatar_url }}" alt=""></button>
+      <a href="/profile/{{ user.user_id }}" class="follow-details"><strong>{{ user.display_name }}</strong><small>@{{ user.user_id }} · {{ user.bio }}</small></a>
+      <a href="/profile/{{ user.user_id }}" class="btn btn-outline btn-small">프로필 보기</a>
+    </div>
+    {% else %}
+      <div class="search-empty"><svg class="icon"><use href="#i-search"/></svg><h3>일치하는 ID가 없어요.</h3><p>다른 아이디로 다시 검색해보세요.</p></div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="search-empty search-intro"><svg class="icon"><use href="#i-search"/></svg><h3>어떤 사용자를 찾고 계신가요?</h3><p>현재 미리보기에서는 샘플 계정의 ID로 검색할 수 있어요.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

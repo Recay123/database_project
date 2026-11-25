@@ -1,0 +1,15 @@
+백엔드 담당 팀원에게 전달할 메시지 (복사해서 보내세요)
+
+프론트엔드는 FRAME v3까지 개발했고, UI 화면/팝업/테마/검색/스토리 읽음 표시/미리보기 업로드가 동작합니다.
+이번 ZIP에서 backend/는 백엔드 담당 작업 폴더, templates/·static/은 프론트 담당 폴더로 분리해뒀습니다.
+backend.main은 /feed 등의 페이지를 샘플 데이터로 렌더링하며, 쓰기 API는 구현 전까지 501을 반환하도록 해뒀습니다.
+
+1) docs/FRONTEND_BACKEND_HANDOFF.md를 읽고 기능-라우트 맵 확인
+2) docs/API_CONTRACT.md의 필드/JSON 응답 형식 유지
+3) backend/read_service.py를 실제 MySQL SELECT 기반 조회로 교체
+4) backend/routers/actions.py에 로그인·회원가입·댓글·좋아요·팔로우·업로드·비밀번호 변경 구현
+5) auth/session/CSRF가 완료되기 전까지 외부 포트 공개 금지
+
+DB 담당 팀원과 users / follows / posts / comments(+ likes) 테이블 및 PK/FK를 먼저 확정 부탁합니다.
+백엔드 실행: python -m uvicorn backend.main:app --reload --port 8001
+이미 구현한 UI를 수정해야 하는 변경사항은 사전에 공유해 주세요.

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}회원가입{% endblock %}
+{% block auth_content %}
+<div class="auth-shell">
+  <section class="auth-art auth-art-signup" aria-label="FRAME 소개">
+    <div class="auth-art-top"><span class="brand white-brand">FRAME<span class="brand-dot">.</span></span><span class="auth-art-badge">MAKE IT YOURS</span></div>
+    <div class="auth-art-copy"><div class="eyebrow light">CREATE YOUR SPACE</div><h2>당신의 이야기가<br>시작되는 곳.</h2><p>좋아하는 순간을 모아 나만의 피드를 완성하세요.</p></div>
+    <div class="auth-art-foot">EVERY STORY DESERVES A FRAME. <span>✦</span> 2026</div>
+  </section>
+  <section class="auth-content">
+    <div class="auth-card">
+      <div class="mobile-auth-brand">FRAME<span class="brand-dot">.</span></div>
+      <a href="/login" class="back-link"><svg class="icon icon-small"><use href="#i-arrow-left"/></svg> 로그인으로 돌아가기</a>
+      <div class="eyebrow">JOIN THE COMMUNITY</div><h1>새로운 프레임을 만들어봐요.</h1>
+      <p class="muted auth-intro">계정을 만들고 일상의 사진을 공유해보세요.</p>
+      <form id="signup-form" data-demo-form="signup" action="/signup" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}">
+        <label class="field-label" for="signup-username">아이디</label>
+        <input class="text-input" id="signup-username" name="username" required minlength="3" maxlength="30" autocomplete="username" placeholder="예: my_daily_frame">
+        <label class="field-label" for="signup-display">표시 이름</label>
+        <input class="text-input" id="signup-display" name="display_name" required maxlength="60" autocomplete="nickname" placeholder="피드에 표시될 이름">
+        <label class="field-label" for="signup-password">비밀번호</label>
+        <input class="text-input" id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="8자 이상 입력하세요">
+        <label class="field-label" for="signup-confirm">비밀번호 확인</label>
+        <input class="text-input" id="signup-confirm" name="confirm_password" type="password" required minlength="8" autocomplete="new-password" placeholder="비밀번호를 다시 입력하세요">
+        <p class="field-error" id="signup-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block auth-submit" type="submit">회원가입 <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="auth-demo-note">{{ '백엔드 작업 모드: 회원가입 API 연결 전까지 계정이 저장되지 않습니다.' if integration_mode|default('preview') == 'backend' else '미리보기에서는 계정이 DB에 저장되지 않습니다.' }}</p>
+    </div>
+    <div class="auth-footer">데이터베이스 텀프로젝트 · 프론트엔드 데모</div>
+  </section>
+</div>
+{% endblock %}

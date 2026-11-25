@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}홈 피드{% endblock %}
+{% block content %}
+<div class="feed-layout">
+  <section class="feed-primary">
+    <header class="section-header">
+      <div><div class="eyebrow">GOOD TO SEE YOU AGAIN</div><h1>오늘의 피드 <span class="heading-spark">✳</span></h1><p class="muted">일상 속 새로운 순간들을 둘러보세요.</p></div>
+      <div class="date-chip">YOUR DAILY FRAME</div>
+    </header>
+    <div class="stories-panel">
+      <div class="row-heading"><h2>친구들의 순간</h2><span class="subtle-badge">클릭해서 스토리 보기</span></div>
+      <div class="stories-list">
+        {% for user in stories %}
+        <button class="story-user" type="button" data-story-open data-story-user="{{ user.user_id }}" data-story-name="{{ user.display_name }}" data-story-avatar="{{ user.avatar_url }}" data-story-image="{{ user.story_image }}" data-story-caption="{{ user.story_caption }}" aria-label="{{ user.user_id }}님의 스토리 보기">
+          <span class="story-ring"><img src="{{ user.avatar_url }}" alt=""></span>
+          <span>{{ user.user_id }}</span>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="feed-label"><span>RECENT POSTS</span><div class="feed-label-line"></div><span>최신순</span></div>
+    <div class="posts-list">
+      {% for post in posts %}
+      <article class="post-card" data-post-id="{{ post.post_id }}">
+        <header class="post-header">
+          <div class="post-author">
+            <button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ post.author_avatar }}" data-avatar-name="{{ post.author_name }}" aria-label="{{ post.author_name }}의 프로필 사진 크게 보기"><img class="avatar avatar-md" src="{{ post.author_avatar }}" alt=""></button>
+            <span><a href="/profile/{{ post.author_id }}"><strong>{{ post.author_name }}</strong></a><small>@{{ post.author_id }} · {{ post.location }}</small></span>
+          </div>
+          <span class="post-date">{{ post.created_at }}</span>
+        </header>
+        <button type="button" class="post-media media-open-button" data-post-open="{{ post.post_id }}" aria-label="{{ post.author_id }}의 게시물 자세히 보기"><img src="{{ post.image_url }}" alt="{{ post.image_alt }}" loading="lazy"></button>
+        <div class="post-body">
+          <div class="post-actions">
+            <div class="action-cluster">
+              <button type="button" class="icon-button like-button {{ 'is-liked' if post.is_liked else '' }}" data-like-button data-post-id="{{ post.post_id }}" data-initial-liked="{{ 'true' if post.is_liked else 'false' }}" data-initial-count="{{ post.like_count }}" aria-label="좋아요" aria-pressed="{{ 'true' if post.is_liked else 'false' }}"><svg class="icon"><use href="#i-heart"/></svg></button>
+              <button type="button" class="icon-button" data-focus-comment="{{ post.post_id }}" aria-label="댓글 작성"><svg class="icon"><use href="#i-message"/></svg></button>
+              <button type="button" class="icon-button" data-demo-action="share" aria-label="공유"><svg class="icon"><use href="#i-send"/></svg></button>
+            </div>
+            <button type="button" class="icon-button bookmark-button" data-bookmark-button aria-label="저장" aria-pressed="false"><svg class="icon"><use href="#i-bookmark"/></svg></button>
+          </div>
+          <p class="like-count"><strong data-like-count="{{ post.post_id }}">{{ post.like_count }}</strong>명이 좋아합니다</p>
+          <p class="post-caption"><a href="/profile/{{ post.author_id }}">{{ post.author_id }}</a> <span data-mention-text>{{ post.caption }}</span></p>
+          <div class="comments-list" data-comments-list="{{ post.post_id }}">{% for comment in post.comments %}<p class="comment-line" data-comment-id="{{ comment.comment_id }}" data-post-id="{{ post.post_id }}"><strong><a href="/profile/{{ comment.author_id }}">{{ comment.author_id }}</a></strong> <span data-mention-text>{{ comment.text }}</span>{% if current_user and comment.author_id == current_user.user_id %} <button type="button" data-delete-comment data-post-id="{{ post.post_id }}" data-comment-id="{{ comment.comment_id }}" aria-label="내 댓글 삭제">삭제</button>{% endif %}</p>{% endfor %}</div>
+          <form class="comment-form" data-comment-form="{{ post.post_id }}" action="/posts/{{ post.post_id }}/comments" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}"><input aria-label="댓글" name="text" maxlength="500" required placeholder="댓글을 입력하세요..." id="comment-input-{{ post.post_id }}"><button type="submit">게시</button></form>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="end-of-feed">여기까지 확인했어요 <span>✳</span> 오늘의 순간도 기록해보세요.</p>
+  </section>
+  <aside class="feed-aside">
+    <div class="aside-greeting"><div class="eyebrow">A NOTE FOR YOU</div><h2>모든 순간이<br>이야기가 될 수 있어요.</h2><p>오늘 가장 기억하고 싶은 장면은 무엇인가요?</p><a href="/upload" class="btn btn-primary btn-small">게시물 만들기 <span>↗</span></a></div>
+    <div class="aside-panel"><div class="aside-panel-title"><h3>추천 사용자</h3><span>DISCOVER</span></div>
+      {% for user in suggested_users %}<div class="suggested-user"><button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ user.avatar_url }}" data-avatar-name="{{ user.display_name }}" aria-label="프로필 사진 확대"><img src="{{ user.avatar_url }}" alt="" class="avatar avatar-md"></button><a class="suggested-user-details" href="/profile/{{ user.user_id }}"><strong>{{ user.display_name }}</strong><small>@{{ user.user_id }}</small></a><a href="/profile/{{ user.user_id }}" class="suggested-arrow" aria-label="프로필로 이동">↗</a></div>{% endfor %}
+    </div>
+    <div class="aside-foot">FRAME · 데이터베이스 텀프로젝트<br>{{ '백엔드 작업 모드 · 아직 샘플 데이터로 표시' if integration_mode|default('preview') == 'backend' else 'Mock Data 및 로컬 미리보기 업로드 사용 중' }}</div>
+  </aside>
+</div>
+<script id="page-posts-json" type="application/json">{{ posts|tojson }}</script>
+{% endblock %}

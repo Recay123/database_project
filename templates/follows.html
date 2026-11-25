@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}{{ '팔로워' if mode == 'followers' else '팔로잉' }} 목록{% endblock %}
+{% block content %}
+<div class="page-narrow follows-page"><a href="/profile/{{ profile_user.user_id }}" class="back-link"><svg class="icon icon-small"><use href="#i-arrow-left"/></svg> 프로필로 돌아가기</a><header class="simple-page-header"><div class="eyebrow">CONNECTIONS</div><h1>{{ profile_user.display_name }}님의 {{ '팔로워' if mode == 'followers' else '팔로잉' }}</h1><p class="muted">{{ '백엔드 SQL 연동 전까지 샘플 사용자 목록이 표시됩니다.' if integration_mode|default('preview') == 'backend' else '데모에서는 샘플 사용자 목록이 표시됩니다.' }}</p></header>
+  <div class="tabs"><a href="/profile/{{ profile_user.user_id }}/followers" class="{{ 'active' if mode == 'followers' else '' }}">팔로워</a><a href="/profile/{{ profile_user.user_id }}/following" class="{{ 'active' if mode == 'following' else '' }}">팔로잉</a></div>
+  <div class="follows-list">{% for user in users %}<a class="follow-item" href="/profile/{{ user.user_id }}"><img class="avatar avatar-lg" src="{{ user.avatar_url }}" alt=""><span><strong>{{ user.display_name }}</strong><small>@{{ user.user_id }} · {{ user.location }}</small></span><span class="suggested-arrow">↗</span></a>{% endfor %}</div>
+</div>
+{% endblock %}
