@@ -116,4 +116,5 @@ def password_page(request: Request, db=Depends(get_db)):
     if not current:
         return _login_redirect()
     return page(request, db, "change_password.html", active_page="settings", current=current,
-                success=request.query_params.get("changed") == "1")
+                success=request.query_params.get("changed") == "1",
+                profile_saved=bool(request.session.pop("profile_saved", False)))

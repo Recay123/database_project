@@ -151,6 +151,49 @@ class MySQLHandoffTests(unittest.TestCase):
                     self.assertIsNone(cur.fetchone(), sql)
             db.rollback()
 
+    def test_profile_settings_edit_the_session_user(self):
+        client = self.client
+        settings = "/settings/password"
+        endpoint = "/settings/profile"
+        self.assertEqual(client.post(endpoint).headers["location"], "/login")
+
+        signup = {"username": "profile_member", "display_name": "기존 이름",
+                  "password": "profile-password", "confirm_password": "profile-password",
+                  "csrf_token": csrf(client, "/signup")}
+        self.assertEqual(client.post("/signup", data=signup).status_code, 303)
+        self.assertEqual(self.login("profile_member", "profile-password").status_code, 303)
+        self.assertIn('value="기존 이름"', client.get(settings).text)
+        self.assertEqual(client.post(endpoint, data={"display_name": "새 이름"}).status_code, 403)
+
+        token = csrf(client, settings)
+        for name, bio in ((" ", ""), ("이" * 51, ""), ("새 이름", "소" * 201)):
+            with self.subTest(name=name, bio_length=len(bio)):
+                invalid = client.post(endpoint, data={
+                    "display_name": name, "bio": bio, "csrf_token": token,
+                })
+                self.assertEqual(invalid.status_code, 400)
+
+        updated = client.post(endpoint, data={
+            "display_name": "  새 이름  ", "bio": "  사진을 기록합니다.  ",
+            "csrf_token": token, "user_id": "demo_alice",
+        })
+        self.assertEqual(updated.status_code, 303)
+        self.assertEqual(updated.headers["location"], settings)
+        self.assertIn("프로필을 저장했어요.", client.get(settings).text)
+        self.assertNotIn("프로필을 저장했어요.", client.get(settings).text)
+
+        with TestClient(backend, follow_redirects=False) as viewer:
+            self.assertEqual(self.login("demo_jineon", client=viewer).status_code, 303)
+            profile = viewer.get("/profile/profile_member").text
+            self.assertIn("새 이름", profile)
+            self.assertIn("사진을 기록합니다.", profile)
+            self.assertIn("박앨리스", viewer.get("/profile/demo_alice").text)
+
+        cleared = client.post(endpoint, data={"display_name": "새 이름", "bio": "",
+                                              "csrf_token": token})
+        self.assertEqual(cleared.status_code, 303)
+        self.assertNotIn("사진을 기록합니다.", client.get("/profile/profile_member").text)
+
     def test_feed_upload_profile_search_and_mutations(self):
         client = self.client
         self.assertEqual(self.login("demo_jineon").status_code, 303)

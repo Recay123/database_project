@@ -96,6 +96,32 @@ def logout(request: Request, csrf_token: str = Form("")):
     return _redirect("/login")
 
 
+@router.post("/settings/profile")
+def profile_update(request: Request, display_name: str = Form(""), bio: str = Form(""),
+                   csrf_token: str = Form(""), db=Depends(get_db)):
+    current = reads.get_current_user(db, request)
+    if not current:
+        return _redirect("/login")
+    check_csrf(request, csrf_token)
+    display_name, bio = display_name.strip(), bio.strip()
+
+    if not 1 <= len(display_name) <= 50 or len(bio) > 200:
+        error = ("표시 이름은 1~50자로 입력해 주세요." if not 1 <= len(display_name) <= 50
+                 else "자기소개는 200자 이하로 입력해 주세요.")
+        return page(request, db, "change_password.html", active_page="settings",
+                    current=current, status_code=400, profile_error=error,
+                    display_name_input=display_name, bio_input=bio)
+
+    with reads.cursor(db) as cur:
+        cur.execute(
+            "UPDATE users SET display_name=%s, bio=%s WHERE user_id=%s",
+            (display_name, bio or None, current["user_id"]),
+        )
+    db.commit()
+    request.session["profile_saved"] = True
+    return _redirect("/settings/password")
+
+
 @router.post("/settings/password")
 def password_update(request: Request, current_password: str = Form(""),
                     new_password: str = Form(""), confirm_password: str = Form(""),

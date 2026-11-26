@@ -76,6 +76,7 @@
 |---|---|---|---|
 | `/login` | POST | `username`, `password`, `csrf_token` | 쿠키 발급, 303 `/feed` |
 | `/signup` | POST | `username`, `display_name`, `password`, `confirm_password`, `csrf_token` | DB user INSERT, 303 `/login` |
+| `/settings/profile` | POST | `display_name` (1~50자), `bio` (최대 200자, 비워도 됨), `csrf_token` | 세션 사용자의 프로필 저장, 303 `/settings/password` |
 | `/settings/password` | POST | `current_password`, `new_password`, `confirm_password`, `csrf_token` | 303 `/settings/password` |
 | `/posts` | POST multipart | `image` (jpg/png/webp, 최대 8MB), `caption` (최대 2200자), `csrf_token` | 파일 저장+DB INSERT, 303 `/feed?uploaded=1` |
 
