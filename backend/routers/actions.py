@@ -85,6 +85,7 @@ def signup(request: Request, username: str = Form(""), display_name: str = Form(
         if exc.errno != errorcode.ER_DUP_ENTRY:
             raise
         return fail("이미 사용 중인 아이디입니다.")
+    request.session["signup_success"] = True
     return _redirect("/login")
 
 

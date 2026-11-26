@@ -39,7 +39,8 @@ def login_page(request: Request, db=Depends(get_db)):
     current = reads.get_current_user(db, request)
     if current:
         return RedirectResponse(url="/feed", status_code=303)
-    return page(request, db, "login.html", layout="auth", active_page="login", current=None)
+    return page(request, db, "login.html", layout="auth", active_page="login", current=None,
+                registered=bool(request.session.pop("signup_success", False)))
 
 
 @router.get("/signup", response_class=HTMLResponse)

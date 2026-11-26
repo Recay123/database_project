@@ -9,6 +9,7 @@
   <meta name="description" content="FRAME — 순간을 기록하고 함께 나누는 공간">
   <title>{% block title %}FRAME{% endblock %} · photo journal</title>
   <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/v4.css') }}">
   <script>(function(){try{var t=localStorage.getItem('frame-theme');if(['forest','ocean','lavender','coral'].includes(t))document.documentElement.dataset.theme=t;}catch(e){}})();</script>
   {% block head %}{% endblock %}
 </head>
@@ -54,7 +55,7 @@
           <div class="sidebar-account">
             <button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ current_user.avatar_url }}" data-avatar-name="{{ current_user.display_name }}" aria-label="내 프로필 사진 확대"><img src="{{ current_user.avatar_url }}" alt="" class="avatar avatar-md"></button>
             <a class="sidebar-account-info" href="/profile/{{ current_user.user_id }}"><span><strong>{{ current_user.display_name }}</strong><small>@{{ current_user.user_id }}</small></span></a>
-            <a href="/profile/{{ current_user.user_id }}" aria-label="내 프로필로 이동"><svg class="icon icon-small"><use href="#i-more"/></svg></a>
+            <a href="/profile/{{ current_user.user_id }}" aria-label="내 프로필로 이동"><svg class="icon icon-small"><use href="#i-user"/></svg></a>
           </div>
           <form action="/logout" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}">
@@ -82,6 +83,10 @@
         <div class="dialog-head"><a id="dialog-post-author" href="#"></a><button type="button" class="dialog-close" data-close-modal aria-label="닫기">✕</button></div>
         <p id="dialog-post-location" class="muted"></p>
         <p id="dialog-post-caption" class="dialog-caption"></p>
+        <div class="v4-dialog-post-tools" id="v4-dialog-post-tools" data-post-id="" hidden>
+          <button type="button" class="v4-mini-action" data-v4-edit-post>게시물 수정</button>
+          <button type="button" class="v4-mini-action danger" data-v4-delete-post>게시물 삭제</button>
+        </div>
         <div id="dialog-post-comments" class="dialog-comments"></div>
         <div class="dialog-bottom"><strong id="dialog-post-likes"></strong><span id="dialog-post-date"></span></div>
         <button type="button" class="dialog-back" data-close-modal>← 프로필/피드로 돌아가기</button>
@@ -103,8 +108,20 @@
     <img id="avatar-dialog-image" alt="프로필 사진"><strong id="avatar-dialog-name"></strong>
     <button type="button" class="dialog-back" data-close-modal>← 돌아가기</button>
   </dialog>
+  <dialog id="v4-post-editor" class="v4-editor-dialog" aria-label="게시물 수정">
+    <h2>게시물 수정</h2>
+    <form>
+      <label class="field-label" for="v4-caption">사진 설명</label>
+      <textarea id="v4-caption" name="caption" maxlength="2200" placeholder="사진에 대한 이야기를 적어주세요."></textarea>
+      <div class="v4-editor-actions">
+        <button type="button" class="btn btn-outline" data-v4-close-editor>취소</button>
+        <button type="submit" class="btn btn-primary">변경사항 저장</button>
+      </div>
+    </form>
+  </dialog>
   <div class="toast" role="status" aria-live="polite" id="app-toast"></div>
   <script src="{{ url_for('static', path='/js/app.js') }}" defer></script>
+  <script src="{{ url_for('static', path='/js/v4.js') }}" defer></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

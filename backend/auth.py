@@ -4,7 +4,14 @@ import secrets
 
 from fastapi import Depends, HTTPException, Request
 from pwdlib import PasswordHash
-from pwdlib.exceptions import HashVerificationError, UnknownHashError
+
+from pwdlib.exceptions import UnknownHashError
+
+try:
+    from pwdlib.exceptions import HashVerificationError
+except ImportError:
+    from argon2.exceptions import VerificationError as HashVerificationError
+
 
 from backend.db import get_db
 from backend.read_service import get_current_user

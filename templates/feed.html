@@ -27,7 +27,18 @@
             <button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ post.author_avatar }}" data-avatar-name="{{ post.author_name }}" aria-label="{{ post.author_name }}의 프로필 사진 크게 보기"><img class="avatar avatar-md" src="{{ post.author_avatar }}" alt=""></button>
             <span><a href="/profile/{{ post.author_id }}"><strong>{{ post.author_name }}</strong></a><small>@{{ post.author_id }} · {{ post.location }}</small></span>
           </div>
-          <span class="post-date">{{ post.created_at }}</span>
+          <div class="v4-post-header-tools">
+            <span class="post-date">{{ post.created_at }}</span>
+            {% if current_user and post.author_id == current_user.user_id %}
+            <details class="v4-post-menu">
+              <summary aria-label="내 게시물 메뉴">···</summary>
+              <div class="v4-post-menu-panel">
+                <button type="button" data-v4-edit-post>게시물 수정</button>
+                <button type="button" class="danger" data-v4-delete-post>게시물 삭제</button>
+              </div>
+            </details>
+            {% endif %}
+          </div>
         </header>
         <button type="button" class="post-media media-open-button" data-post-open="{{ post.post_id }}" aria-label="{{ post.author_id }}의 게시물 자세히 보기"><img src="{{ post.image_url }}" alt="{{ post.image_alt }}" loading="lazy"></button>
         <div class="post-body">
@@ -42,7 +53,7 @@
           <p class="like-count"><strong data-like-count="{{ post.post_id }}">{{ post.like_count }}</strong>명이 좋아합니다</p>
           <p class="post-caption"><a href="/profile/{{ post.author_id }}">{{ post.author_id }}</a> <span data-mention-text>{{ post.caption }}</span></p>
           <div class="comments-list" data-comments-list="{{ post.post_id }}">{% for comment in post.comments %}<p class="comment-line" data-comment-id="{{ comment.comment_id }}" data-post-id="{{ post.post_id }}"><strong><a href="/profile/{{ comment.author_id }}">{{ comment.author_id }}</a></strong> <span data-mention-text>{{ comment.text }}</span>{% if current_user and comment.author_id == current_user.user_id %} <button type="button" data-delete-comment data-post-id="{{ post.post_id }}" data-comment-id="{{ comment.comment_id }}" aria-label="내 댓글 삭제">삭제</button>{% endif %}</p>{% endfor %}</div>
-          <form class="comment-form" data-comment-form="{{ post.post_id }}" action="/posts/{{ post.post_id }}/comments" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}"><input aria-label="댓글" name="text" maxlength="500" required placeholder="댓글을 입력하세요..." id="comment-input-{{ post.post_id }}"><button type="submit">게시</button></form>
+          <form class="comment-form" data-comment-form="{{ post.post_id }}" action="/posts/{{ post.post_id }}/comments" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}"><input aria-label="댓글" name="text" maxlength="1000" required placeholder="댓글을 입력하세요..." id="comment-input-{{ post.post_id }}"><button type="submit">게시</button></form>
         </div>
       </article>
       {% endfor %}

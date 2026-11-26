@@ -13,6 +13,7 @@
       <div class="eyebrow">WELCOME BACK</div>
       <h1>다시 만나 반가워요.</h1>
       <p class="muted auth-intro">계정에 로그인하고 새로운 순간을 만나보세요.</p>
+      {% if registered|default(false) %}<p class="v4-success" role="status" id="v4-signup-success">회원가입이 완료됐어요! 새 계정으로 로그인해 주세요.</p>{% endif %}
       <form id="login-form" data-demo-form="login" action="/login" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token|default('') }}">
         <label class="field-label" for="username">아이디</label>
         <input class="text-input" id="username" name="username" required autocomplete="username" placeholder="아이디를 입력하세요">

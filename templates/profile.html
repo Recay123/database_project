@@ -6,7 +6,11 @@
   <div class="profile-overview">
     <button type="button" class="profile-avatar-button" data-avatar-open data-avatar-src="{{ profile_user.avatar_url }}" data-avatar-name="{{ profile_user.display_name }}" aria-label="{{ profile_user.display_name }}의 프로필 사진 확대"><img src="{{ profile_user.avatar_url }}" alt="" class="avatar profile-avatar"></button>
     <div class="profile-meta"><div class="eyebrow">PERSONAL JOURNAL</div><h1>{{ profile_user.display_name }}</h1><div class="handle">@{{ profile_user.user_id }} · {{ profile_user.location }}</div><p>{{ profile_user.bio }}</p></div>
-    {% if is_own_profile %}<a href="/settings/password" class="btn btn-outline profile-follow-button">계정 설정 <svg class="icon icon-small"><use href="#i-settings"/></svg></a>
+    {% if is_own_profile %}<div class="v4-avatar-owner-actions">
+      <button type="button" class="btn btn-primary profile-follow-button" id="v4-avatar-pick">프로필 사진 변경</button>
+      <input type="file" id="v4-avatar-file" accept="image/jpeg,image/png,image/webp" aria-label="프로필 사진 업로드">
+      <a href="/settings/password" class="btn btn-outline profile-follow-button">계정 설정 <svg class="icon icon-small"><use href="#i-settings"/></svg></a>
+    </div>
     {% else %}<button type="button" class="btn btn-primary profile-follow-button" data-follow-button data-user="{{ profile_user.user_id }}" data-initial-following="{{ 'true' if profile_user.is_following else 'false' }}">{{ '팔로잉' if profile_user.is_following else '팔로우' }}</button>{% endif %}
   </div>
   <div class="profile-stat-row"><div><strong>{{ posts|length }}</strong><span>게시물</span></div><a href="/profile/{{ profile_user.user_id }}/followers"><strong data-follower-count>{{ profile_user.followers_count }}</strong><span>팔로워</span></a><a href="/profile/{{ profile_user.user_id }}/following"><strong>{{ profile_user.following_count }}</strong><span>팔로잉</span></a></div>

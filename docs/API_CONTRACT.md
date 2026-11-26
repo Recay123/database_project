@@ -1,4 +1,4 @@
-# FRAME v3 — HTTP 및 Jinja2 계약 (팀 공통)
+# FRAME v3/v4 — HTTP 및 Jinja2 계약 (팀 공통)
 
 ## 0. 구조 / 데이터 전달 방식
 
@@ -135,3 +135,17 @@ Same-origin, 세션 쿠키 포함(`credentials: 'same-origin'`), `Accept: applic
 ## 4. 팀 간 변경 절차
 
 필드나 URL을 변경해야 하면 프론트엔드 담당자에게 알리고 **API_CONTRACT.md, Jinja 템플릿, JS, 백엔드 라우트**를 같은 PR/커밋에서 수정. DB 테이블/컬럼명은 프론트엔드에 직접 노출할 필요 없음. `read_service.py`에서 DB 결과를 이 화면 데이터 구조로 매핑.
+
+
+## 5. FRAME v4 추가 계약
+
+동일 출처 세션 쿠키 + `X-CSRF-Token` 헤더 필수. 모두 실제 백엔드 서버에서 사용.
+
+| HTTP | URL | 입력 | 응답 | 권한 |
+|---|---|---|---|---|
+| PATCH | `/posts/{post_id}` | FormData `caption` (0~2200자) | `{post_id, caption, updated}` | 작성자 |
+| PATCH | `/posts/{post_id}/comments/{comment_id}` | FormData `text` (1~1000자) | `{comment:{comment_id, post_id, author_id, text}, updated}` | 댓글 작성자 |
+| POST | `/users/me/avatar` | multipart `avatar` (JPG/PNG/WEBP, 최대 8MB) | `{avatar_url, user_id, updated}` | 로그인 사용자 |
+
+게시물 및 댓글 삭제는 기존 v3 API를 그대로 사용함. `users.avatar_url`이 이미 존재하므로 마이그레이션은 불필요함.
+회원가입 성공 시 세션 플래시(`signup_success`)를 사용하며 기존 `303 /login` URL을 유지하여 성공 메시지를 표시함.

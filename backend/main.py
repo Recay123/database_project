@@ -16,7 +16,7 @@ from mysql.connector import Error as MySQLError
 from starlette.middleware.sessions import SessionMiddleware
 
 from backend.db import get_db
-from backend.routers import actions, pages
+from backend.routers import actions, pages, v4_actions
 
 ROOT = Path(__file__).resolve().parent.parent
 app = FastAPI(title="FRAME · Backend")
@@ -30,6 +30,7 @@ app.state.templates = Jinja2Templates(directory=str(ROOT / "templates"))
 app.mount("/static", StaticFiles(directory=str(ROOT / "static")), name="static")
 app.include_router(pages.router)
 app.include_router(actions.router)
+app.include_router(v4_actions.router)
 logger = logging.getLogger(__name__)
 
 

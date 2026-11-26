@@ -7,3 +7,4 @@ __pycache__/
 !/preview_data/.gitkeep
 .venv/
 venv/
+.frame_v4_backup/
