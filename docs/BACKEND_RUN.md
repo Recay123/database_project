@@ -35,13 +35,3 @@ Start-Process http://127.0.0.1:8000/login
 4. 게시물에 좋아요를 누르거나 댓글을 작성합니다. 다른 사용자를 언급하려면 댓글에 `@아이디`를 입력합니다.
 5. 내 프로필에서 **프로필 사진 변경**을 선택할 수 있습니다. **계정 설정**에서는 표시 이름, 자기소개, 비밀번호를 변경할 수 있습니다.
 
-## 3. 테스트
-
-```powershell
-python -m unittest discover -s tests -v
-$env:FRAME_TEST_MYSQL = '1'
-python -m unittest discover -s tests -v
-Remove-Item Env:FRAME_TEST_MYSQL
-```
-
-두 번째 실행에서는 설정된 MySQL 계정으로 임의 이름의 테스트 DB를 생성하고 `schema.sql`, `seed.sql`을 적용합니다. 테스트 종료 시 생성한 DB를 삭제하므로 테스트 계정에는 DB 생성·삭제와 TRIGGER 권한이 필요합니다.
