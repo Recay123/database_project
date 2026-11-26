@@ -65,7 +65,6 @@
     <div class="aside-panel"><div class="aside-panel-title"><h3>추천 사용자</h3><span>DISCOVER</span></div>
       {% for user in suggested_users %}<div class="suggested-user"><button type="button" class="avatar-button" data-avatar-open data-avatar-src="{{ user.avatar_url }}" data-avatar-name="{{ user.display_name }}" aria-label="프로필 사진 확대"><img src="{{ user.avatar_url }}" alt="" class="avatar avatar-md"></button><a class="suggested-user-details" href="/profile/{{ user.user_id }}"><strong>{{ user.display_name }}</strong><small>@{{ user.user_id }}</small></a><a href="/profile/{{ user.user_id }}" class="suggested-arrow" aria-label="프로필로 이동">↗</a></div>{% endfor %}
     </div>
-    <div class="aside-foot">FRAME · 데이터베이스 텀프로젝트<br>{{ '백엔드 작업 모드 · 아직 샘플 데이터로 표시' if integration_mode|default('preview') == 'backend' else 'Mock Data 및 로컬 미리보기 업로드 사용 중' }}</div>
   </aside>
 </div>
 <script id="page-posts-json" type="application/json">{{ posts|tojson }}</script>
